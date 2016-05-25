@@ -1,0 +1,3 @@
+(((ta,tb),tc),td);
+(((ta,tc),tb),td);
+(((tb,tc),ta),td);

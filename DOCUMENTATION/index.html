@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | 
+<a href='http://ie2.uoregon.edu'><small>IE2</small></a> | 
+<a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Overview</a> | <a href="installation.html">Download and Install</a> | <a href="tutorial.html">Tutorial</a> | <a href="batch_commands.html">Command-Line Reference</a></p>
+<hr>
+
+<h2>Overview</h2>
+<p>Lazarus is a collection of Python scripts for running the programs <em>codeml</em> and <em>baseml</em> 
+in the <a href="http://abacus.gene.ucl.ac.uk/software/paml.html">PAML software suite</a>.  
+Lazarus allows you to run PAML for large distributions of phylogenies, and then integrate over those trees 
+to calculate <em>maximum a posteriori</em> ancestral sequences.  Even if you're dealing with only one tree, 
+Lazarus is still useful as it provides an easy way to compose and launch PAML jobs.  Lazarus provides an 
+easy-to-use terminal interface that mimics the program <a href="http://atgc.lirmm.fr/phyml/">PhyML</a>; 
+if you're comfortable using PhyML, then using Lazarus should be straightforward.</p>
+
+<p>Given a sequence alignment (in FASTA format), a phylogenetic tree (in Newick format), and an 
+evolutionary model (provided by PAML), Lazarus uses codeml or baseml to reconstruct the marginal 
+distribution of ancestral states at all internal nodes of the given tree.  Lazarus then parses
+the output from <em>codeml</em> or <em>baseml</em>, and produces a collection of text files, 
+each containing the posterior probability ancestral state distribution for a single ancestral node.</p>
+
+<h2>References</h2>
+
+<p>Maximum Likelihood Ancestral Sequence Reconstruction:<br>
+<a href="http://www.genetics.org/cgi/content/abstract/141/4/1641">Yang et al., Genetics 1995</a>
+</p>
+
+<p>Marginal Reconstruction:<br>
+<a href="http://www.springerlink.com/content/f20551n708g4627q/">Koshi and Goldstein, Journal of Molecular Evolution 1996</a>
+</p>
+
+<p>PAML, version 4:<br>
+<a href="http://mbe.oxfordjournals.org/cgi/content/abstract/24/8/1586">Yang, Molecular Biology and Evolution, 2007</a>
+</p>
+
+<p>Lazarus:<br>
+<a href="http://mbe.oxfordjournals.org/content/27/9/1988.abstract">Hanson-Smith, et al., Molecular Biology and Evolution, 2010</a>
+</p>
+
+<h2>Caveat Emptor</h2>
+
+<p>I hope you find Lazarus useful, but be aware that I do not have a large team of software developers.  
+I am providing this software as a resource to the research community, but without the promise of support! 
+If you have questions, email Victor Hanson-Smith (victorhansonsmith at gmail dot com), and I'll try to 
+help you as thoroughly as possible.</p>
+
+<hr>
+
+</BODY>
+</HTML>

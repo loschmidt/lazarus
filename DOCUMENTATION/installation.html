@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+
+
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | 
+<a href='http://ie2.uoregon.edu'><small>IE2</small></a> | 
+<a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+
+
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Overview</a> | <a href="installation.html">Download and Install</a> | <a href="tutorial.html">Tutorial</a> | <a href="batch_commands.html">Command-Line Reference</a></p>
+<hr>
+
+<div class="divGreen">
+<p>The latest version of Lazarus can be downloaded from Google Code: <a href="http://code.google.com/p/project-lazarus/">project-lazarus</a></p>
+<p>Follow the link for "Source" and then click on the button to download "zip".</p>
+</div>
+
+<h2>Installation</h2>
+
+<p>Lazarus is a collection of Python scripts.  You do not need to install Lazarus, <em>per se</em>, but
+you may need to install a few software packages that are required by Lazarus.  Some of these packages
+may already be installed on your computer.</p>
+
+<p>To get Lazarus working on your machine, follow these four steps:</p>
+
+<ol>
+<li><a href="#prereqs">Install Pre-Requisites</a></li>
+<li><a href="#downloadlazarus">Download Lazarus</a></li>
+<li><a href="#envvar">Create an Environment Variable</a></li>
+<li><a href="#usinglazarus">Using Lazarus</a></li>
+</ol>
+
+<hr>
+<h3><a name="prereqs">1. Install Pre-Requisites</a></h3>
+
+<p>Lazarus requires these software packages:</p>
+
+<!--
+<ul>
+<li><a href="http://www.python.org">Python 2.6</a> (or newer)</li>
+<li><a href="http://www.numpy.org">NumPy</a></li>
+<li><a href="http://sourceforge.net/projects/pycogent">PyCogent</a></li>
+<li><a href="http://abacus.gene.ucl.ac.uk/software/paml.html">PAML version 4.4</a></li>
+</ul>
+-->
+
+<ul>
+<li><a href="#python26">Python 2.6</a> (or newer)</li>
+<li><a href="#numpy">NumPy</a></li>
+<li><a href="#pycogent">PyCogent</a></li>
+<li><a href="#paml">PAML version 4.4</a></li>
+<li><a href="#cran">(optional) R for statistics</a></li>
+</ul>
+
+<h4><a name="python26">1a. Python 2.6</a></h4>
+<p>If you're using OS X, Python is probably installed on your machine.  To test if you have Python, 
+type the following 
+into your terminal:
+<div class="divBlue">
+<p>$> python --version</p>
+</div>
+
+<p>If Python is installed, you will see output like this:</p>
+<div class="divBlue">
+<p>Python 2.7.2</p>
+</div>
+
+<p>If Python is not installed, you will see output like this:</p>
+<div class="divBlue">
+<p>-bash: python: command not found</p>
+</div>
+
+<p>If you need to install Python, visit the official Python website: <a href="http://www.python.org">http://www.python.org</a></p>
+
+<a name="numpy"><h4>1b. NumPy</h4></a>
+<p>Numerical Python (NumPy) is a package for scientific computing.  Follow this link to download and
+install NumPy: <a href="http://www.numpy.org">http://www.numpy.org</a></p>
+
+<p>After you install NumPy, you can test if the installation was successful as follows:</p>
+
+<p>First, open your terminal and load interactive Python:</p>
+<div class="divBlue">
+<p class="code">$> python<br>
+Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)<br> 
+</p>
+</div>
+
+<p>Then, try to import NumPy:</p>
+<div class="divBlue">
+<p class="code">>>> import numpy
+</p>
+</div>
+
+<p>If NumPy successfully loaded, then you will see no error messages.  If NumPy is NOT installed, however, 
+you will something like this:
+
+<div class="divBlue">
+<p class="code">Traceback (most recent call last):<br>
+  File "<stdin>", line 1, in <module><br>
+ImportError: No module named numpy
+</p>
+</div>
+
+<a name="pycogent"><h4>1c. PyCogent</h4></a>
+<p>PyCogent is a Python package for parsing alignment files and phylogenetic trees.  Lazarus relies on PyCogent for many tasks, including rooting trees and finding ancestral nodes.  You can <a href="http://sourceforge.net/projects/pycogent">download PyCogent from SourceForge</a>.  For more information about PyCogent, see <a href="http://genomebiology.com/2007/8/8/R171">Knight et al., Genome Biology 2007</a></p>
+
+<p>After you install PyCogent, you can test if the installation was successful as follows:</p>
+
+<p>First, open your terminal and load interactive Python:</p>
+<div class="divBlue">
+<p class="code">$> python<br>
+Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)<br> 
+</p>
+</div>
+
+<p>Next, try to load the PyCogent package as shown here:</p>
+<div class="divBlue">
+<p class="code">>>> from cogent import *</p>
+</div>
+
+<p>If PyCogent successfully loaded, then you will not see any error messages.  If PyCogent is not correctly installed,
+however, then you will an error message like this:</p>
+
+<div class="divBlue">
+<p class="code">
+Traceback (most recent call last):<br>
+  File "<stdin>", line 1, in <module><br>
+ImportError: No module named cogent<br>
+
+</p>
+</div>
+
+
+<a name="paml"><h4>1d. PAML</h4></a>
+<p>Lazarus requires the applications <em>codeml</em> and <em>baseml</em>, which are part of the PAML software suite.  
+The Lazarus distribution includes PAML version 4.4, in a folder titled <em>paml</em>.  
+If you want to try a different version of PAML, please visit the <a href="http://abacus.gene.ucl.ac.uk/software/paml.html">official PAML webpage</a> for instructions.</p>
+
+<p><strong>First, build the PAML code.</strong>  If you're using OSX, you can save yourself time and simply use the prebuilt 
+PAML binaries that came with the
+Lazarus ZIP file: these binares are located in the folder <em>paml/bin</em>.  If you're not using OSX, you can build your own binaries from 
+source code by following the instructions in the text file located at <em>paml/src/README.txt</em></p>
+
+<p><strong>Second, build soft links.</strong>  In order for Lazarus to find PAML programs, you need to ensure that <em>codeml</em> 
+and <em>baseml</em> can be accessed from anywhere on your machine.  On Unix/Linux/OSX machines, you can do this by adding 
+soft links as follows:<p>
+
+<div class="divBlue">
+<p class="code">
+$> sudo ln -s /Applications/lazarus/paml/bin/codeml /usr/bin/codeml<br>
+$> sudo ln -s /Applications/lazarus/paml/bin/baseml /usr/bin/baseml<br>
+</p>
+</div>
+
+<p>. . . in the above example, we created two links, located in <em>/usr/bin</em> to versions of <em>codeml</em>
+and <em>baseml</em> located in <em>/Applications/lazarus/paml/bin</em>.  
+You may need to change the particular paths in this example to match your setup.</p>
+
+<p>Next, verify that <em>codeml</em> and <em>baseml</em> are accessible.  
+Specifically, try invoking <em>codeml</em> and <em>baseml</em> from the command-line.  
+If these programs are accessible, then you should see output like this:<p>
+
+<div class="divBlue">
+<p class="code">
+>$ baseml<br>
+BASEML in paml version 4.4b, July 2010<br>
+<br>
+error when opening file baseml.ctl<br>
+tell me the full path-name of the file?<br>
+</p>
+
+<p class="code">
+>$ codeml<br>
+<br>
+error when opening file codeml.ctl<br>
+tell me the full path-name of the file?<br>
+</p>
+</div>
+
+<p>If <em>codeml</em> or <em>baseml</em> are not accessible from your system-wide path, then you will see output like this (below).  
+If you have this problem, return to the beginning of this section, and read the instructions carefully.</p>
+
+<div class="divBlue">
+<p class="code">
+$>baseml<br>
+-bash: baseml: command not found
+
+<p class="code">
+$>codeml<br>
+-bash: codeml: command not found
+</div>
+
+
+
+
+<a name="cran"><h4>1e. (optional) R for statistics</h4></a>
+
+<p>The R Project is a popular statistics package.  Lazarus uses R to plot confidence statistics about ancestors.
+  You can download it here: <a href="http://www.r-project.org">http://www.r-project.org</a>.
+
+
+<hr>
+<a name="downloadlazarus"><h3>2. Download Lazarus</h3></a>
+
+<div class="divGreen">
+<p>The latest version of Lazarus can be downloaded from Google Code: <a href="http://code.google.com/p/project-lazarus/">project-lazarus</a></p>
+<p>Follow the link for "Source" and then click on the button to download "zip".</p>
+</div>
+
+<p>Save the zip to a safe place on your machine, and then unpackage it.  
+For example, if you're using OSX, a good place is <em>~/Applications/</em>.</p> 
+
+
+<hr>
+<a name="envvar"><h3>3. Create an Environment Variable for Lazarus</h3></a>
+
+<p>Next, create a <a href="http://en.wikipedia.org/wiki/Environment_variable">Unix environment variable</a> that points to the
+folder where Lazarus was installed.</p>
+
+<h4>3a. For Mac OS X or other Unix/Linux using BASH:</h4>
+
+<p>First, define a variable named LAZARUS that points to the directory in which you unpackaged the Lazarus ZIP file.  On my OS X system, 
+the directory is <em>~/Applications/Lazarus/</em>.  On your machine, however, this location may be different. Create the environment variable 
+by pasting the following command into your terminal:</p>
+
+<div class="divBlue">
+<p class="code">$> echo "LAZARUS=~/Applications/Lazarus/" >> ~/.bash_profile<br>
+</p>
+</div>
+
+<p>In the above command, on your machine, you will need to replace "~/Applications/Lazarus/" with the location appropriate
+for your setup.</p>
+
+<p>. . . and then export the variable to the operating system as follows:</p>
+
+<div class="divBlue">
+<p class="code">$> echo "export LAZARUS" >> ~/.bash_profile
+</p>
+</div>
+
+<p>Close your terminal, and then re-open it, and the new variable should be available to your operating system.  You can test it by typing
+the following into your terminal:</p>
+
+
+<div class="divBlue">
+<p class="code">$> echo $LAZARUS
+</p>
+</div>
+
+<p>. . . and you should then see the name of the directory in which unpackaged the Lazarus ZIP file.  If you don't see this -- and instead
+see a blank line -- then the environment variable was not created properly.</p>
+
+
+<h4>3b. For Unix/Linux using CSH shell:</h4>
+
+
+<p>If you are using CSH shell, paste the following single command into your terminal: </p>
+
+<div class="divBlue">
+<p class="code">$> echo "setenv LAZARUS ~/Applications/Lazarus/" >> ~/.cshrc<br>
+</p>
+</div>
+
+<h4>3c. For other Unix/Linux not using BASH or CSH:</h4>
+
+<p>If you are using a shell program other than BASH or CSH, please consult your shell documentation for instructions to create
+environment variables.  The main idea is to create a variable named LAZARUS, and point it to the directory where the Lazarus
+Python scripts are saved.</p>
+
+
+<p><strong>At this point, you should be able to use Lazarus.</strong>  See the section <a href="#usinglazarus">Using Lazarus</a> for details.<p>
+
+
+<hr>
+<a name="usinglazarus"><h3>4. Using Lazarus</h3></a>
+
+<p>There are two modes for using Lazarus: the GUI and the batch system.</p>
+
+<h4>2a. Lazarus GUI</h4> <p>The GUI provides a PhyML-like interface for composing <em>codeml</em> and <em>baseml</em> jobs.  
+This is a good place to start
+for basic analysis.  To launch Lazarus GUI, use the following script:</p>
+
+<div class="divBlue">
+<p class="code">$> python $LAZARUS/lazarus_gui.py
+</p>
+</div>
+
+<h4>2b. Lazarus BATCH</h4> <p>The batch mode provides a command-line interface using flags and parameters.  
+This is useful for launching Lazarus
+from within other scripts.  To launch Lazarus BATCH, invoke the Python script named <em>lazarus.py</em> as follows:</p>
+
+<div class="divBlue">
+<p>For amino acid sequence analysis using codeml, do this:</p>
+<p class="code">$> python $LAZARUS/lazarus.py --codeml</p>
+<p>. . . or, for nucleotide analysis using baseml, do this:</p>
+<p class="code">$> python $LAZARUS/lazarus.py --baseml</p>
+</div>
+
+<p>See the <a href="tutorial.html"/>tutorial page</a> to learn how to use Lazarus.</p>
+
+<h4>That's it.  Enjoy Lazarus.</h4>
+
+<hr>
+
+</BODY>
+</HTML>

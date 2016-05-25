@@ -1,0 +1,2 @@
+ tree |   lnL  | Bayesian post. prob
+1  -4676.616  1.000
