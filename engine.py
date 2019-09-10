@@ -507,18 +507,18 @@ class Engine:
         if os.path.exists( outputDirectory ) == False:
             os.system("mkdir " + outputDirectory)
         # get the outgroup
-        outgroup = self.argParser.getArg("--outgroup")        
-        if outgroup != False:
+        #outgroup = self.argParser.getArg("--outgroup")        
+        #if outgroup != False:
             # convert the string y into a list of taxa names:
-            if outgroup.__contains__("[") == False:
-                self.logger.throwError("Your list of outgroup taxa does not appear to be formatted correctly.\nI think you forgot to include the opening bracket '['.\nMake sure it looks like this: [taxaName,taxaName,taxaName]\n")
-            if outgroup.__contains__("]") == False:
-                self.logger.throwError("Your list of outgroup taxa does not appear to be formatted correctly.\nI think you forgot to include the closing bracket ']'.\nMake sure it looks like this: [taxaName,taxaName,taxaName]\n")
-            ys = re.sub("[\[\]]", "", outgroup)
-            outgroup = ys.split(",")
-            self.checkTaxa(outgroup, [t])
-        else:
-            self.logger.throwError("The argument --gapcorrect requires the argument --outgroup")
+        #    if outgroup.__contains__("[") == False:
+        #        self.logger.throwError("Your list of outgroup taxa does not appear to be formatted correctly.\nI think you forgot to include the opening bracket '['.\nMake sure it looks like this: [taxaName,taxaName,taxaName]\n")
+        #    if outgroup.__contains__("]") == False:
+        #        self.logger.throwError("Your list of outgroup taxa does not appear to be formatted correctly.\nI think you forgot to include the closing bracket ']'.\nMake sure it looks like this: [taxaName,taxaName,taxaName]\n")
+        #    ys = re.sub("[\[\]]", "", outgroup)
+        #    outgroup = ys.split(",")
+        #    self.checkTaxa(outgroup, [t])
+        #else:
+        #    self.logger.throwError("The argument --gapcorrect requires the argument --outgroup")
         
 #         # load the tree as an MIT Tree object (see treelib.py):       
 #         f = open(outputDirectory + "/laztree.tre", "w")
@@ -569,7 +569,8 @@ class Engine:
         import dendropy
         #print "546:", self.data.trees[t].treeviewString
         dtree = dendropy.Tree.get_from_string(self.data.trees[t].treeviewString,"newick")
-        dtree.update_splits(delete_outdegree_one=True)
+        #dtree.update_bipartitions(delete_outdegree_one=True)
+        dtree.update_bipartitions()
         #print "572:", dtree.as_string('newick')
         
         #print "573:", outgroup
@@ -583,24 +584,24 @@ class Engine:
 
         #dtree.reroot_at_node(new_root_node=not_out_mrca)
         
-        cleaned_outgroup = []
-        for og in outgroup:
-            label = re.sub("_", " ", og)
-            cleaned_outgroup.append( label.__str__() )
+        #cleaned_outgroup = []
+        #for og in outgroup:
+        #    label = re.sub("_", " ", og)
+        #    cleaned_outgroup.append( label.__str__() )
         
-        print "lazarus 591:", cleaned_outgroup
-        mrca = dtree.mrca(taxon_labels=cleaned_outgroup)
+        #print "lazarus 591:", cleaned_outgroup
+        #mrca = dtree.mrca(taxon_labels=cleaned_outgroup)
                 
         """New for March 2015:"""
-        if outgroup.__len__() == 1:
-            mrca = mrca.parent_node
+        #if outgroup.__len__() == 1:
+        #    mrca = mrca.parent_node
         
         #dtree.update_splits(delete_outdegree_one=False)
         #dtree.reroot_at_midpoint(update_splits=False, delete_outdegree_one=False)
 
         #print "579:", dtree.__str__()
         
-        dtree.reroot_at_node(mrca, update_splits=True)
+        #dtree.reroot_at_node(mrca, update_bipartitions=True)
         #dtree.reroot_at_edge(mrca.edge, update_splits=True)
         
         
@@ -675,7 +676,11 @@ class Engine:
                 elif union == 0.5: # the union is ambigious, assign the dominant state
                     union = x
                 elif x != union and x != 0.5: # some of my children have indels, some do not:
+                    if self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName( node_name ).Parent == None:
+                        self.data.trees[tree_number].temporary_states[node_name] = 0.5
                     return 0.5
+        if self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName( node_name ).Parent == None:
+            self.data.trees[tree_number].temporary_states[node_name] = union
         return union # all my children have the same indel status, return this status up to my parent
     
     def preorder_traversal(self, tree_number, node_name, column, column_number):
@@ -692,12 +697,38 @@ class Engine:
         if False == self.data.trees[tree_number].temporary_tree_object.getNodeNames().__contains__( node_name ):
             n = self.data.trees[tree_number].temporary_tree_object
         # 2. is this node a leaf?
-        elif self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName(node_name).isTip():
+        if self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName(node_name).isTip():
             return
         # 3. else, we're dealing with an internal node...
         else:
             if n == None:
                 n = self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName( node_name )
+                if n.Parent == None:
+                    if self.data.trees[tree_number].temporary_states[n.Name] == 0:
+                        self.data.trees[tree_number].nodes[n.Name].sites[column_number].stateProbs["-"] = 100.0
+                    if self.data.trees[tree_number].temporary_states[n.Name] == 0.5:
+                        mlstate = self.data.trees[tree_number].nodes[n.Name.__str__()].sites[column_number].find_ML_state()
+                        mlstatepp = self.data.trees[tree_number].nodes[n.Name.__str__()].sites[column_number].stateProbs[mlstate]
+                        self.data.trees[tree_number].nodes[n.Name.__str__()].sites[column_number].stateProbs[mlstate.swapcase()] = mlstatepp
+                elif self.data.trees[tree_number].temporary_states.__contains__(n.Parent.Name):
+                    if self.data.trees[tree_number].temporary_states[n.Parent.Name] == self.data.trees[tree_number].temporary_states[n.Name]:
+                        if self.data.trees[tree_number].temporary_states[node_name] == 0:
+                            #print "adding gap to node:", node_name, ", column:", column_number
+                            self.data.trees[tree_number].nodes[node_name].sites[column_number].stateProbs["-"] = 100.0
+                        if self.data.trees[tree_number].temporary_states[node_name] == 0.5:
+                            mlstate = self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].find_ML_state()
+                            #print "mlstatepp = self.data.trees[",tree_number,"].nodes[",node_name.__str__(),"].sites[",column_number,"].stateProbs[",mlstate,"]"
+                            mlstatepp = self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs[mlstate]
+                            #print "623:", node_name
+                            self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs[mlstate.swapcase()] = mlstatepp
+                    elif self.data.trees[tree_number].temporary_states[n.Parent.Name] == 0.5 and self.data.trees[tree_number].temporary_states[n.Name] == 0:
+                        #print "626:", node_name
+                        self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs["-"] = 100.0
+                    elif self.data.trees[tree_number].temporary_states[n.Parent.Name] == 0 and self.data.trees[tree_number].temporary_states[n.Name] == 0.5:
+                        #print "629:", node_name, column_number
+                        self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs["-"] = 100.0
+                        self.data.trees[tree_number].temporary_states[n.Name] == 0
+                        
             if n.Parent != None and self.data.trees[tree_number].temporary_states.__contains__(n.Parent.Name):
                 if self.data.trees[tree_number].temporary_states[n.Parent.Name] == self.data.trees[tree_number].temporary_states[n.Name]:
                     if self.data.trees[tree_number].temporary_states[node_name] == 0:
