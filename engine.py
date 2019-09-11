@@ -100,6 +100,11 @@ class Engine:
         # check the model:
         if useAminoAcids:
             r = relative_path_to_abs_path(modelpath)
+            # try builtin models from PAML
+            if not r:
+                paml_model = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paml", "dat", modelpath)
+                if os.path.exists(paml_model):
+                    r = paml_model
             #print modelpath
             #print r
             if r == False:
